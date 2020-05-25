@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DirectionActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="294dp"
+        tools:layout_editor_absoluteY="132dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/connect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:text="连接" />
+
+            <Button
+                android:id="@+id/disconnect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:text="断开" />
+
+            <Switch
+                android:id="@+id/auto_reconnect_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="自动重连" />
+
+            <TextView
+                android:id="@+id/status_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/ping_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp" />
+
+            <TextView
+                android:id="@+id/voltage_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp" />
+
+            <Button
+                android:id="@+id/swap_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:text="摇杆" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/btnleft"
+                        android:layout_width="65dp"
+                        android:layout_height="60dp"
+                        android:layout_below="@+id/btnup"
+                        android:layout_marginStart="25dp"
+                        android:src="@mipmap/ic_keyboard_arrow_left_black_24dp"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageButton
+                        android:id="@+id/btnup"
+                        android:layout_width="60dp"
+                        android:layout_height="65dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="50dp"
+                        android:layout_toEndOf="@+id/btnleft"
+                        android:contentDescription=""
+                        android:src="@mipmap/ic_keyboard_arrow_up_black_24dp"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageButton
+                        android:id="@+id/btnright"
+                        android:layout_width="65dp"
+                        android:layout_height="60dp"
+                        android:layout_below="@+id/btnup"
+                        android:layout_toEndOf="@+id/btnup"
+                        android:src="@mipmap/ic_keyboard_arrow_right_black_24dp"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageButton
+                        android:id="@+id/btndown"
+                        android:layout_width="60dp"
+                        android:layout_height="65dp"
+                        android:layout_below="@+id/btnright"
+                        android:layout_toEndOf="@+id/btnleft"
+                        android:src="@mipmap/ic_keyboard_arrow_down_black_24dp"
+                        tools:ignore="ContentDescription" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="8"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/gear_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorAccent" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/speed_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="速度" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
