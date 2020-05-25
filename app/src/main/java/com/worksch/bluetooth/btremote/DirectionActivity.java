@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -21,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -41,6 +44,7 @@ public class DirectionActivity extends Activity {
 
     private Button speedButton;
     private TextView gearText;
+    private TextView textView;
     public int speedPwm = 1;
 
     // 方向控制键
@@ -50,6 +54,8 @@ public class DirectionActivity extends Activity {
     private ImageButton upButton;
     private ImageButton downButton;
     private Vibrator vibrator;
+    private Button btnK;
+    private Button btnN;
 
     private long lastSendTime = 0;
     private ConnectionThread connectionThread;
@@ -74,6 +80,7 @@ public class DirectionActivity extends Activity {
         statusTextView = findViewById(R.id.status_text_view);
         voltageView = findViewById(R.id.voltage_view);
         pingView = findViewById(R.id.ping_view);
+        textView = findViewById(R.id.textView);
 
         speedButton = findViewById(R.id.speed_button);
         gearText = findViewById(R.id.gear_text);
@@ -83,13 +90,23 @@ public class DirectionActivity extends Activity {
         upButton = findViewById(R.id.btnup);
         downButton = findViewById(R.id.btndown);
 
+        btnK = findViewById(R.id.btnK);
+        btnN = findViewById(R.id.btnN);
+
         imageButtonListener = new ImageButtonListener(this, vibrator);
         leftButton.setOnTouchListener(imageButtonListener);
         rightButton.setOnTouchListener(imageButtonListener);
         upButton.setOnTouchListener(imageButtonListener);
         downButton.setOnTouchListener(imageButtonListener);
+        btnK.setOnClickListener(imageButtonListener);
+        btnN.setOnClickListener(imageButtonListener);
 
-        connectButton.setOnClickListener(event -> showDevicesDialog(this::connect));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectButton.setOnClickListener(event -> showDevicesDialog(this::connect));
+        }
+        else {
+            Toast.makeText(this, "手机系统版本太低无法正常使用此功能。", Toast.LENGTH_LONG).show();
+        }
         disconnectButton.setOnClickListener(event -> disconnect());
 
         speedButton.setOnClickListener(event -> {
@@ -200,8 +217,12 @@ public class DirectionActivity extends Activity {
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setItems(Arrays.stream(devicesArray).map(BluetoothDevice::getName)
-                .toArray(String[]::new), (event, index)->callback.accept(devicesArray[index]));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            builder.setItems(Arrays.stream(devicesArray).map(BluetoothDevice::getName)
+                    .toArray(String[]::new), (event, index)->callback.accept(devicesArray[index]));
+        } else {
+            Toast.makeText(this, "手机系统版本太低无法正常使用此功能。", Toast.LENGTH_LONG).show();
+        }
 
         builder.show();
     }
@@ -275,11 +296,15 @@ public class DirectionActivity extends Activity {
         }
         //runOnUiThread(() -> debugTextView.setText(message));
     }
+    @FunctionalInterface
+    public interface StatusCallback {
+        void onStatus(int status, String message);
+    }
 
     public class ConnectionThread extends Thread {
 
         private BluetoothSocket socket;
-        private MainActivity.StatusCallback callback;
+        private DirectionActivity.StatusCallback callback;
         private InputStream inputStream;
         private OutputStream outputStream;
         private boolean manuallyClosed = false;
@@ -294,7 +319,7 @@ public class DirectionActivity extends Activity {
         public static final int PING = 5;
 
 
-        public ConnectionThread(BluetoothSocket socket, MainActivity.StatusCallback callback) {
+        public ConnectionThread(BluetoothSocket socket, DirectionActivity.StatusCallback callback) {
             this.socket = socket;
             this.callback = callback;
         }
@@ -315,23 +340,28 @@ public class DirectionActivity extends Activity {
                         } else {
                             while (inputStream.available() > 0) {
                                 int inByte = inputStream.read();
-                                if (inByte != 0x0A) {
+                                if (inByte != ';') {
                                     buffer[bufferLen++] = (byte) inByte;
                                 } else {
                                     bufferLen = 0;
                                     Log.d(TAG, new String(buffer));
                                     fill(buffer, (byte)'\0');
+
+                                    if (buffer[0] == 'T') {
+                                        runOnUiThread(() -> {
+                                            String temper = new String(buffer);
+                                            temper = temper.substring(1, temper.length()-1);
+                                            float tp = Float.parseFloat(temper);
+                                            if (tp >= 37.3) {
+                                                textView.setTextColor(Color.RED);
+                                            }else {
+                                                textView.setTextColor(0xFF3F51B5);
+                                            }
+                                            textView.setText(temper+"℃");
+                                        });
+                                    }
                                 }
-                                /*if (bufferLen == 2) {
-                                    int lo = buffer[0] & 0b11111;
-                                    int hi = buffer[1] & 0b11111;
-                                    int vol = lo | hi << 5;
-                                    double voltage = vol / 1024d * 5 * 3;
-                                    callback.onStatus(VOLTAGE, String.format(Locale.US, "%.2fV", voltage));
-                                    callback.onStatus(PING, (System.currentTimeMillis() - lastSendTime) + "ms");
-                                }*/
                             }
-                            //callback.onStatus(MESSAGE, message);
                         }
                     } catch (IOException e) {
                         //callback.onStatus(ERROR_DISCONNECTED, "Read from input stream failed.");

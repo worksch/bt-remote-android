@@ -8,13 +8,15 @@ import android.view.View;
 import android.widget.Toast;
 
 class ImageButtonListener implements View.OnClickListener, View.OnTouchListener {
-    private String TAG = "ImageViewButtonListener";
+    private String TAG = "ImageButtonListener";
 
     private String leftCmd  = "A";
     private String rightCnmd = "D";
     private String upCmd = "W";
     private String downCmd = "S";
     private String commonCmd = "Q;";
+    private String kCmd = "K";
+    private String nCmd = "N";
     private Vibrator vibrator;
 
     private int speedPwm = 1;
@@ -37,7 +39,14 @@ class ImageButtonListener implements View.OnClickListener, View.OnTouchListener 
 
     @Override
     public void onClick(View view) {
-
+        switch (view.getId()) {
+            case R.id.btnK:
+                sendCommond(kCmd);
+                break;
+            case R.id.btnN:
+                sendCommond(nCmd);
+                break;
+        }
     }
 
     @Override
@@ -77,6 +86,18 @@ class ImageButtonListener implements View.OnClickListener, View.OnTouchListener 
         String outCmd = cmd + speedPwm + ";";
         connectionThread.writeBytes(outCmd.getBytes(), 0, outCmd.getBytes().length);
         Log.d(TAG, outCmd + event.toString());
+
+        return true;
+    }
+    private boolean sendCommond(String cmd) {
+        if (this.connectionThread == null) {
+            Toast.makeText(context, "没有连接到蓝牙设备", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        vibrator.vibrate(15);
+        String outCmd = cmd + speedPwm + ";";
+        connectionThread.writeBytes(outCmd.getBytes(), 0, outCmd.getBytes().length);
+        Log.d(TAG, outCmd);
 
         return true;
     }
