@@ -308,7 +308,7 @@ public class DirectionActivity extends Activity {
         private InputStream inputStream;
         private OutputStream outputStream;
         private boolean manuallyClosed = false;
-        private byte[] buffer = new byte[128];
+        private byte[] buffer = new byte[32];
         int bufferLen = 0;
 
 
@@ -343,22 +343,23 @@ public class DirectionActivity extends Activity {
                                 if (inByte != ';') {
                                     buffer[bufferLen++] = (byte) inByte;
                                 } else {
+                                    String value = new String(buffer, 0, bufferLen);
                                     bufferLen = 0;
-                                    Log.d(TAG, new String(buffer));
                                     fill(buffer, (byte)'\0');
-
-                                    if (buffer[0] == 'T') {
-                                        runOnUiThread(() -> {
-                                            String temper = new String(buffer);
-                                            temper = temper.substring(1, temper.length()-1);
-                                            float tp = Float.parseFloat(temper);
+                                    value.trim();
+                                    Log.d(TAG, value);
+                                    if (value.indexOf("T") != -1) {
+                                        //runOnUiThread(() -> {
+                                            String numvalue = value.substring(value.indexOf("T")+1, value.length());
+                                            float tp = Float.parseFloat(numvalue);
+                                            Log.d(TAG, tp+"℃");
                                             if (tp >= 37.3) {
                                                 textView.setTextColor(Color.RED);
                                             }else {
                                                 textView.setTextColor(0xFF3F51B5);
                                             }
-                                            textView.setText(temper+"℃");
-                                        });
+                                            textView.setText(tp+"℃");
+                                        //});
                                     }
                                 }
                             }
