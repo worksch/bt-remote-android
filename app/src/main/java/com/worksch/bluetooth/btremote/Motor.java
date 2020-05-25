@@ -1,8 +1,8 @@
-package rccar.btremote;
+package com.worksch.bluetooth.btremote;
 
-import static rccar.btremote.Motor.Direction.FORWARD;
-import static rccar.btremote.Motor.Direction.REVERSE;
-import static rccar.btremote.Motor.Direction.STOP;
+import static com.worksch.bluetooth.btremote.Motor.Direction.FORWARD;
+import static com.worksch.bluetooth.btremote.Motor.Direction.REVERSE;
+import static com.worksch.bluetooth.btremote.Motor.Direction.STOP;
 
 public class Motor implements ByteSerializable {
 

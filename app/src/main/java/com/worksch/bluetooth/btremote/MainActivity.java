@@ -1,4 +1,4 @@
-package rccar.btremote;
+package com.worksch.bluetooth.btremote;
 
 import android.app.Activity;
 import android.app.AlertDialog;
